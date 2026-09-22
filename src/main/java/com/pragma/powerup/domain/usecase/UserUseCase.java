@@ -1,7 +1,13 @@
 package com.pragma.powerup.domain.usecase;
 
 import com.pragma.powerup.domain.api.IUserServicePort;
-import com.pragma.powerup.domain.exception.*;
+import com.pragma.powerup.domain.exception.CorreoYaExisteException;
+import com.pragma.powerup.domain.exception.DocumentoInvalidoException;
+import com.pragma.powerup.domain.exception.DocumentoYaExisteException;
+import com.pragma.powerup.domain.exception.FormatoCelularInvalidoException;
+import com.pragma.powerup.domain.exception.FormatoCorreoInvalidoException;
+import com.pragma.powerup.domain.exception.RolNoEncontradoException;
+import com.pragma.powerup.domain.exception.UsuarioMenorDeEdadException;
 import com.pragma.powerup.domain.model.RoleModel;
 import com.pragma.powerup.domain.model.UserModel;
 import com.pragma.powerup.domain.spi.IPasswordEncoderPort;
@@ -15,6 +21,8 @@ import java.util.regex.Pattern;
 public class UserUseCase implements IUserServicePort {
 
     private static final Long ID_ROL_PROPIETARIO = 2L;
+    private static final int MAYORIA_DE_EDAD = 18;
+    private static final int LONGITUD_MAXIMA_CELULAR = 13;
     private static final Pattern PATRON_DOCUMENTO = Pattern.compile("^[0-9]+$");
     private static final Pattern PATRON_CELULAR = Pattern.compile("^\\+?[0-9]+$");
     private static final Pattern PATRON_CORREO = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
@@ -50,7 +58,7 @@ public class UserUseCase implements IUserServicePort {
     }
 
     private void validarMayorDeEdad(LocalDate fechaNacimiento) {
-        if (fechaNacimiento == null || Period.between(fechaNacimiento, LocalDate.now()).getYears() < 18) {
+        if (fechaNacimiento == null || Period.between(fechaNacimiento, LocalDate.now()).getYears() < MAYORIA_DE_EDAD) {
             throw new UsuarioMenorDeEdadException();
         }
     }
@@ -62,7 +70,7 @@ public class UserUseCase implements IUserServicePort {
     }
 
     private void validarCelular(String celular) {
-        if (celular == null || celular.length() > 13 || !PATRON_CELULAR.matcher(celular).matches()) {
+        if (celular == null || celular.length() > LONGITUD_MAXIMA_CELULAR || !PATRON_CELULAR.matcher(celular).matches()) {
             throw new FormatoCelularInvalidoException();
         }
     }

@@ -1,6 +1,12 @@
 package com.pragma.powerup.domain.usecase;
 
-import com.pragma.powerup.domain.exception.*;
+import com.pragma.powerup.domain.exception.CorreoYaExisteException;
+import com.pragma.powerup.domain.exception.DocumentoInvalidoException;
+import com.pragma.powerup.domain.exception.DocumentoYaExisteException;
+import com.pragma.powerup.domain.exception.FormatoCelularInvalidoException;
+import com.pragma.powerup.domain.exception.FormatoCorreoInvalidoException;
+import com.pragma.powerup.domain.exception.RolNoEncontradoException;
+import com.pragma.powerup.domain.exception.UsuarioMenorDeEdadException;
 import com.pragma.powerup.domain.model.RoleModel;
 import com.pragma.powerup.domain.model.UserModel;
 import com.pragma.powerup.domain.spi.IPasswordEncoderPort;
