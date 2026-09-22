@@ -149,4 +149,29 @@ class UserUseCaseTest {
         assertThrows(RolNoEncontradoException.class, () -> userUseCase.guardarPropietario(usuarioValido));
         verify(userPersistencePort, never()).guardarUsuario(any());
     }
+
+    @Test
+    void obtenerUsuarioPorId_usuarioExiste_retornaUsuario() {
+        // Arrange
+        when(userPersistencePort.obtenerPorId(1L)).thenReturn(usuarioValido);
+
+        // Act
+        UserModel resultado = userUseCase.obtenerUsuarioPorId(1L);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(usuarioValido.getNombre(), resultado.getNombre());
+        verify(userPersistencePort).obtenerPorId(1L);
+    }
+
+    @Test
+    void obtenerUsuarioPorId_usuarioNoExiste_lanzaExcepcion() {
+        // Arrange
+        when(userPersistencePort.obtenerPorId(999L)).thenReturn(null);
+
+        // Act & Assert
+        assertThrows(com.pragma.powerup.domain.exception.UsuarioNoEncontradoException.class,
+                () -> userUseCase.obtenerUsuarioPorId(999L));
+        verify(userPersistencePort).obtenerPorId(999L);
+    }
 }

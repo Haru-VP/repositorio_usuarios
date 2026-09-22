@@ -8,6 +8,7 @@ import com.pragma.powerup.domain.exception.FormatoCelularInvalidoException;
 import com.pragma.powerup.domain.exception.FormatoCorreoInvalidoException;
 import com.pragma.powerup.domain.exception.RolNoEncontradoException;
 import com.pragma.powerup.domain.exception.UsuarioMenorDeEdadException;
+import com.pragma.powerup.domain.exception.UsuarioNoEncontradoException;
 import com.pragma.powerup.domain.model.RoleModel;
 import com.pragma.powerup.domain.model.UserModel;
 import com.pragma.powerup.domain.spi.IPasswordEncoderPort;
@@ -55,6 +56,15 @@ public class UserUseCase implements IUserServicePort {
 
         userModel.setClave(passwordEncoderPort.encriptarClave(userModel.getClave()));
         userPersistencePort.guardarUsuario(userModel);
+    }
+
+    @Override
+    public UserModel obtenerUsuarioPorId(Long id) {
+        UserModel userModel = userPersistencePort.obtenerPorId(id);
+        if (userModel == null) {
+            throw new UsuarioNoEncontradoException();
+        }
+        return userModel;
     }
 
     private void validarMayorDeEdad(LocalDate fechaNacimiento) {

@@ -7,6 +7,7 @@ import com.pragma.powerup.domain.exception.FormatoCelularInvalidoException;
 import com.pragma.powerup.domain.exception.FormatoCorreoInvalidoException;
 import com.pragma.powerup.domain.exception.RolNoEncontradoException;
 import com.pragma.powerup.domain.exception.UsuarioMenorDeEdadException;
+import com.pragma.powerup.domain.exception.UsuarioNoEncontradoException;
 import com.pragma.powerup.infrastructure.exception.NoDataFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,6 +77,13 @@ public class ControllerAdvisor {
             RolNoEncontradoException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Collections.singletonMap(MESSAGE, ExceptionResponse.ROL_NO_ENCONTRADO.getMessage()));
+    }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> handleUsuarioNoEncontradoException(
+            UsuarioNoEncontradoException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.USUARIO_NO_ENCONTRADO.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

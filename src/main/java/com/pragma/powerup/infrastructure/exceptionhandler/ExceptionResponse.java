@@ -8,7 +8,8 @@ public enum ExceptionResponse {
     FORMATO_CORREO_INVALIDO("El correo electrónico no tiene una estructura válida"),
     CORREO_YA_EXISTE("Ya existe un usuario registrado con ese correo electrónico"),
     DOCUMENTO_YA_EXISTE("Ya existe un usuario registrado con ese documento de identidad"),
-    ROL_NO_ENCONTRADO("El rol especificado no existe en el sistema");
+    ROL_NO_ENCONTRADO("El rol especificado no existe en el sistema"),
+    USUARIO_NO_ENCONTRADO("No se encontró el usuario con el ID especificado");
 
     private final String message;
 
