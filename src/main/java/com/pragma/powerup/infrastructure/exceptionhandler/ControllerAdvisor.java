@@ -1,6 +1,7 @@
 package com.pragma.powerup.infrastructure.exceptionhandler;
 
 import com.pragma.powerup.domain.exception.CorreoYaExisteException;
+import com.pragma.powerup.domain.exception.CredencialesInvalidasException;
 import com.pragma.powerup.domain.exception.DocumentoInvalidoException;
 import com.pragma.powerup.domain.exception.DocumentoYaExisteException;
 import com.pragma.powerup.domain.exception.FormatoCelularInvalidoException;
@@ -84,6 +85,13 @@ public class ControllerAdvisor {
             UsuarioNoEncontradoException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Collections.singletonMap(MESSAGE, ExceptionResponse.USUARIO_NO_ENCONTRADO.getMessage()));
+    }
+
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    public ResponseEntity<Map<String, String>> handleCredencialesInvalidasException(
+            CredencialesInvalidasException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.CREDENCIALES_INVALIDAS.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

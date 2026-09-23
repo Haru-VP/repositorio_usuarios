@@ -9,7 +9,8 @@ public enum ExceptionResponse {
     CORREO_YA_EXISTE("Ya existe un usuario registrado con ese correo electrónico"),
     DOCUMENTO_YA_EXISTE("Ya existe un usuario registrado con ese documento de identidad"),
     ROL_NO_ENCONTRADO("El rol especificado no existe en el sistema"),
-    USUARIO_NO_ENCONTRADO("No se encontró el usuario con el ID especificado");
+    USUARIO_NO_ENCONTRADO("No se encontró el usuario con el ID especificado"),
+    CREDENCIALES_INVALIDAS("Credenciales de acceso inválidas o usuario no encontrado");
 
     private final String message;
 
