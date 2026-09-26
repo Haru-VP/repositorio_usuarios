@@ -88,4 +88,28 @@ class UserHandlerTest {
         verify(userRequestMapper, times(1)).toModel(employeeRequestDto);
         verify(userServicePort, times(1)).guardarEmpleado(userModel);
     }
+
+    @Test
+    void guardarCliente_debeMapearYLlamarAlPuertoDelDominio() {
+        // Arrange
+        com.pragma.powerup.application.dto.request.ClientRequestDto clientRequestDto =
+                new com.pragma.powerup.application.dto.request.ClientRequestDto(
+                        "Laura",
+                        "Jimenez",
+                        "123456780",
+                        "+573151234567",
+                        null,
+                        "laura@correo.com",
+                        "claveCliente123",
+                        4L
+                );
+        when(userRequestMapper.toModel(clientRequestDto)).thenReturn(userModel);
+
+        // Act
+        userHandler.guardarCliente(clientRequestDto);
+
+        // Assert
+        verify(userRequestMapper, times(1)).toModel(clientRequestDto);
+        verify(userServicePort, times(1)).guardarCliente(userModel);
+    }
 }

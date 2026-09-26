@@ -44,11 +44,13 @@ class UserUseCaseTest {
     private UserModel usuarioValido;
     private RoleModel rolPropietario;
     private RoleModel rolEmpleado;
+    private RoleModel rolCliente;
 
     @BeforeEach
     void setUp() {
         rolPropietario = new RoleModel(2L, "PROPIETARIO", "Rol de propietario de restaurante");
         rolEmpleado = new RoleModel(3L, "EMPLEADO", "Rol de empleado de restaurante");
+        rolCliente = new RoleModel(4L, "CLIENTE", "Rol de cliente de la plazoleta");
 
         usuarioValido = new UserModel();
         usuarioValido.setNombre("Carlos");
@@ -238,6 +240,70 @@ class UserUseCaseTest {
         when(userPersistencePort.existePorDocumentoDeIdentidad(anyString())).thenReturn(false);
         when(rolePersistencePort.obtenerRolPorId(3L)).thenReturn(null);
         assertThrows(RolNoEncontradoException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarCliente_exitoso() {
+        // Arrange
+        when(userPersistencePort.existePorCorreo(anyString())).thenReturn(false);
+        when(userPersistencePort.existePorDocumentoDeIdentidad(anyString())).thenReturn(false);
+        when(rolePersistencePort.obtenerRolPorId(4L)).thenReturn(rolCliente);
+        when(passwordEncoderPort.encriptarClave("claveSecreta123")).thenReturn("claveEncriptadaBcrypt");
+
+        // Act
+        userUseCase.guardarCliente(usuarioValido);
+
+        // Assert
+        assertEquals("claveEncriptadaBcrypt", usuarioValido.getClave());
+        assertNotNull(usuarioValido.getRol());
+        assertEquals(4L, usuarioValido.getRol().getId());
+        assertEquals("CLIENTE", usuarioValido.getRol().getNombre());
+        verify(userPersistencePort, times(1)).guardarUsuario(usuarioValido);
+    }
+
+    @Test
+    void guardarCliente_documentoInvalidoConLetras_lanzaExcepcion() {
+        usuarioValido.setDocumentoDeIdentidad("12345ABC");
+        assertThrows(DocumentoInvalidoException.class, () -> userUseCase.guardarCliente(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarCliente_celularInvalidoMayorA13Caracteres_lanzaExcepcion() {
+        usuarioValido.setCelular("+57300123456789");
+        assertThrows(FormatoCelularInvalidoException.class, () -> userUseCase.guardarCliente(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarCliente_correoInvalido_lanzaExcepcion() {
+        usuarioValido.setCorreo("correo-invalido.com");
+        assertThrows(FormatoCorreoInvalidoException.class, () -> userUseCase.guardarCliente(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarCliente_correoYaExiste_lanzaExcepcion() {
+        when(userPersistencePort.existePorCorreo("carlos@restaurante.com")).thenReturn(true);
+        assertThrows(CorreoYaExisteException.class, () -> userUseCase.guardarCliente(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarCliente_documentoYaExiste_lanzaExcepcion() {
+        when(userPersistencePort.existePorCorreo(anyString())).thenReturn(false);
+        when(userPersistencePort.existePorDocumentoDeIdentidad("123456789")).thenReturn(true);
+        assertThrows(DocumentoYaExisteException.class, () -> userUseCase.guardarCliente(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarCliente_rolNoEncontrado_lanzaExcepcion() {
+        when(userPersistencePort.existePorCorreo(anyString())).thenReturn(false);
+        when(userPersistencePort.existePorDocumentoDeIdentidad(anyString())).thenReturn(false);
+        when(rolePersistencePort.obtenerRolPorId(4L)).thenReturn(null);
+        assertThrows(RolNoEncontradoException.class, () -> userUseCase.guardarCliente(usuarioValido));
         verify(userPersistencePort, never()).guardarUsuario(any());
     }
 }

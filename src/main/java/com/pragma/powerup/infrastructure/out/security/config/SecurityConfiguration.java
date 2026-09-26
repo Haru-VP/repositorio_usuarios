@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                         "/webjars/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/user/cliente").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/user/propietario").hasRole("ADMINISTRADOR")
                 .antMatchers(HttpMethod.POST, "/api/v1/user/empleado").hasRole("PROPIETARIO")
                 .anyRequest().authenticated()

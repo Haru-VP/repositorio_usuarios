@@ -1,5 +1,6 @@
 package com.pragma.powerup.infrastructure.input.rest;
 
+import com.pragma.powerup.application.dto.request.ClientRequestDto;
 import com.pragma.powerup.application.dto.request.EmployeeRequestDto;
 import com.pragma.powerup.application.dto.request.UserRequestDto;
 import com.pragma.powerup.application.dto.response.UserResponseDto;
@@ -54,6 +55,19 @@ public class UserRestController {
     @PostMapping("/empleado")
     public ResponseEntity<Void> guardarEmpleado(@Valid @RequestBody EmployeeRequestDto employeeRequestDto) {
         userHandler.guardarEmpleado(employeeRequestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Crear una cuenta de cliente (Público)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cliente creado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos o reglas de negocio no cumplidas", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Rol de cliente no encontrado", content = @Content),
+            @ApiResponse(responseCode = "409", description = "El cliente ya existe por correo o documento de identidad", content = @Content)
+    })
+    @PostMapping("/cliente")
+    public ResponseEntity<Void> guardarCliente(@Valid @RequestBody ClientRequestDto clientRequestDto) {
+        userHandler.guardarCliente(clientRequestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

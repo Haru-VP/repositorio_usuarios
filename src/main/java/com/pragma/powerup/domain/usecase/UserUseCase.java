@@ -23,6 +23,7 @@ public class UserUseCase implements IUserServicePort {
 
     private static final Long ID_ROL_PROPIETARIO = 2L;
     private static final Long ID_ROL_EMPLEADO = 3L;
+    private static final Long ID_ROL_CLIENTE = 4L;
     private static final int MAYORIA_DE_EDAD = 18;
     private static final int LONGITUD_MAXIMA_CELULAR = 13;
     private static final Pattern PATRON_DOCUMENTO = Pattern.compile("^[0-9]+$");
@@ -53,6 +54,13 @@ public class UserUseCase implements IUserServicePort {
     public void guardarEmpleado(UserModel userModel) {
         validarCamposComunes(userModel);
         asignarRolYEncriptarClave(userModel, ID_ROL_EMPLEADO);
+        userPersistencePort.guardarUsuario(userModel);
+    }
+
+    @Override
+    public void guardarCliente(UserModel userModel) {
+        validarCamposComunes(userModel);
+        asignarRolYEncriptarClave(userModel, ID_ROL_CLIENTE);
         userPersistencePort.guardarUsuario(userModel);
     }
 

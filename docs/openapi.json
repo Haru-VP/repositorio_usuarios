@@ -174,6 +174,39 @@
           }
         ]
       }
+    },
+    "/api/v1/user/cliente": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crear una cuenta de cliente (Público)",
+        "operationId": "guardarCliente",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente creado exitosamente"
+          },
+          "400": {
+            "description": "Datos de entrada inválidos o reglas de negocio no cumplidas"
+          },
+          "404": {
+            "description": "Rol de cliente no encontrado"
+          },
+          "409": {
+            "description": "El cliente ya existe por correo o documento de identidad"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -314,6 +347,62 @@
           "clave"
         ],
         "description": "Datos requeridos para la creación de un usuario con rol de empleado"
+      },
+      "ClientRequestDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de pila del cliente",
+            "example": "Laura"
+          },
+          "apellido": {
+            "type": "string",
+            "description": "Apellido del cliente",
+            "example": "Jimenez"
+          },
+          "documentoDeIdentidad": {
+            "type": "string",
+            "description": "Documento de identidad (únicamente numérico)",
+            "example": "1098765432"
+          },
+          "celular": {
+            "type": "string",
+            "description": "Número de celular (máximo 13 caracteres, admite prefijo +)",
+            "example": "+573001234567"
+          },
+          "fechaNacimiento": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de nacimiento (opcional)",
+            "example": "1999-10-12"
+          },
+          "correo": {
+            "type": "string",
+            "description": "Correo electrónico válido",
+            "example": "laura.cliente@correo.com"
+          },
+          "clave": {
+            "type": "string",
+            "description": "Contraseña en texto plano (será encriptada con BCrypt)",
+            "example": "ClaveCliente2026*"
+          },
+          "idRol": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificador del rol (4 para CLIENTE)",
+            "example": 4
+          }
+        },
+        "required": [
+          "nombre",
+          "apellido",
+          "documentoDeIdentidad",
+          "celular",
+          "correo",
+          "clave"
+        ],
+        "description": "Datos requeridos para la creación de una cuenta de cliente"
       }
     },
     "securitySchemes": {
