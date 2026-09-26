@@ -1,5 +1,6 @@
 package com.pragma.powerup.infrastructure.input.rest;
 
+import com.pragma.powerup.application.dto.request.EmployeeRequestDto;
 import com.pragma.powerup.application.dto.request.UserRequestDto;
 import com.pragma.powerup.application.dto.response.UserResponseDto;
 import com.pragma.powerup.application.handler.IUserHandler;
@@ -39,6 +40,20 @@ public class UserRestController {
     @PostMapping("/propietario")
     public ResponseEntity<Void> guardarPropietario(@Valid @RequestBody UserRequestDto userRequestDto) {
         userHandler.guardarPropietario(userRequestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Crear un nuevo usuario con rol de empleado (Solo Propietario)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Empleado creado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos o reglas de negocio no cumplidas", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: solo el propietario puede crear empleados", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Rol de empleado no encontrado", content = @Content),
+            @ApiResponse(responseCode = "409", description = "El empleado ya existe por correo o documento de identidad", content = @Content)
+    })
+    @PostMapping("/empleado")
+    public ResponseEntity<Void> guardarEmpleado(@Valid @RequestBody EmployeeRequestDto employeeRequestDto) {
+        userHandler.guardarEmpleado(employeeRequestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

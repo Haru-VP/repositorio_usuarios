@@ -43,10 +43,12 @@ class UserUseCaseTest {
 
     private UserModel usuarioValido;
     private RoleModel rolPropietario;
+    private RoleModel rolEmpleado;
 
     @BeforeEach
     void setUp() {
         rolPropietario = new RoleModel(2L, "PROPIETARIO", "Rol de propietario de restaurante");
+        rolEmpleado = new RoleModel(3L, "EMPLEADO", "Rol de empleado de restaurante");
 
         usuarioValido = new UserModel();
         usuarioValido.setNombre("Carlos");
@@ -173,5 +175,69 @@ class UserUseCaseTest {
         assertThrows(com.pragma.powerup.domain.exception.UsuarioNoEncontradoException.class,
                 () -> userUseCase.obtenerUsuarioPorId(999L));
         verify(userPersistencePort).obtenerPorId(999L);
+    }
+
+    @Test
+    void guardarEmpleado_exitoso() {
+        // Arrange
+        when(userPersistencePort.existePorCorreo(anyString())).thenReturn(false);
+        when(userPersistencePort.existePorDocumentoDeIdentidad(anyString())).thenReturn(false);
+        when(rolePersistencePort.obtenerRolPorId(3L)).thenReturn(rolEmpleado);
+        when(passwordEncoderPort.encriptarClave("claveSecreta123")).thenReturn("claveEncriptadaBcrypt");
+
+        // Act
+        userUseCase.guardarEmpleado(usuarioValido);
+
+        // Assert
+        assertEquals("claveEncriptadaBcrypt", usuarioValido.getClave());
+        assertNotNull(usuarioValido.getRol());
+        assertEquals(3L, usuarioValido.getRol().getId());
+        assertEquals("EMPLEADO", usuarioValido.getRol().getNombre());
+        verify(userPersistencePort, times(1)).guardarUsuario(usuarioValido);
+    }
+
+    @Test
+    void guardarEmpleado_documentoInvalidoConLetras_lanzaExcepcion() {
+        usuarioValido.setDocumentoDeIdentidad("12345ABC");
+        assertThrows(DocumentoInvalidoException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarEmpleado_celularInvalidoMayorA13Caracteres_lanzaExcepcion() {
+        usuarioValido.setCelular("+57300123456789");
+        assertThrows(FormatoCelularInvalidoException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarEmpleado_correoInvalido_lanzaExcepcion() {
+        usuarioValido.setCorreo("correo-invalido.com");
+        assertThrows(FormatoCorreoInvalidoException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarEmpleado_correoYaExiste_lanzaExcepcion() {
+        when(userPersistencePort.existePorCorreo("carlos@restaurante.com")).thenReturn(true);
+        assertThrows(CorreoYaExisteException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarEmpleado_documentoYaExiste_lanzaExcepcion() {
+        when(userPersistencePort.existePorCorreo(anyString())).thenReturn(false);
+        when(userPersistencePort.existePorDocumentoDeIdentidad("123456789")).thenReturn(true);
+        assertThrows(DocumentoYaExisteException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
+    }
+
+    @Test
+    void guardarEmpleado_rolNoEncontrado_lanzaExcepcion() {
+        when(userPersistencePort.existePorCorreo(anyString())).thenReturn(false);
+        when(userPersistencePort.existePorDocumentoDeIdentidad(anyString())).thenReturn(false);
+        when(rolePersistencePort.obtenerRolPorId(3L)).thenReturn(null);
+        assertThrows(RolNoEncontradoException.class, () -> userUseCase.guardarEmpleado(usuarioValido));
+        verify(userPersistencePort, never()).guardarUsuario(any());
     }
 }

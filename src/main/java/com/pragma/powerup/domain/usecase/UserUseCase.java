@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public class UserUseCase implements IUserServicePort {
 
     private static final Long ID_ROL_PROPIETARIO = 2L;
+    private static final Long ID_ROL_EMPLEADO = 3L;
     private static final int MAYORIA_DE_EDAD = 18;
     private static final int LONGITUD_MAXIMA_CELULAR = 13;
     private static final Pattern PATRON_DOCUMENTO = Pattern.compile("^[0-9]+$");
@@ -43,18 +44,15 @@ public class UserUseCase implements IUserServicePort {
     @Override
     public void guardarPropietario(UserModel userModel) {
         validarMayorDeEdad(userModel.getFechaNacimiento());
-        validarDocumento(userModel.getDocumentoDeIdentidad());
-        validarCelular(userModel.getCelular());
-        validarCorreo(userModel.getCorreo());
-        validarUnicidad(userModel.getCorreo(), userModel.getDocumentoDeIdentidad());
+        validarCamposComunes(userModel);
+        asignarRolYEncriptarClave(userModel, ID_ROL_PROPIETARIO);
+        userPersistencePort.guardarUsuario(userModel);
+    }
 
-        RoleModel rol = rolePersistencePort.obtenerRolPorId(ID_ROL_PROPIETARIO);
-        if (rol == null) {
-            throw new RolNoEncontradoException();
-        }
-        userModel.setRol(rol);
-
-        userModel.setClave(passwordEncoderPort.encriptarClave(userModel.getClave()));
+    @Override
+    public void guardarEmpleado(UserModel userModel) {
+        validarCamposComunes(userModel);
+        asignarRolYEncriptarClave(userModel, ID_ROL_EMPLEADO);
         userPersistencePort.guardarUsuario(userModel);
     }
 
@@ -91,6 +89,13 @@ public class UserUseCase implements IUserServicePort {
         }
     }
 
+    private void validarCamposComunes(UserModel userModel) {
+        validarDocumento(userModel.getDocumentoDeIdentidad());
+        validarCelular(userModel.getCelular());
+        validarCorreo(userModel.getCorreo());
+        validarUnicidad(userModel.getCorreo(), userModel.getDocumentoDeIdentidad());
+    }
+
     private void validarUnicidad(String correo, String documento) {
         if (userPersistencePort.existePorCorreo(correo)) {
             throw new CorreoYaExisteException();
@@ -98,5 +103,14 @@ public class UserUseCase implements IUserServicePort {
         if (userPersistencePort.existePorDocumentoDeIdentidad(documento)) {
             throw new DocumentoYaExisteException();
         }
+    }
+
+    private void asignarRolYEncriptarClave(UserModel userModel, Long idRol) {
+        RoleModel rol = rolePersistencePort.obtenerRolPorId(idRol);
+        if (rol == null) {
+            throw new RolNoEncontradoException();
+        }
+        userModel.setRol(rol);
+        userModel.setClave(passwordEncoderPort.encriptarClave(userModel.getClave()));
     }
 }

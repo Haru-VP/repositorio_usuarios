@@ -1,1 +1,327 @@
-{"openapi":"3.0.1","info":{"title":"Microservicio de Usuarios - PowerUp Plazoleta","description":"API REST para la administración y autenticación de usuarios de la plataforma de Plazoleta de Comidas. Gestiona los roles de Administrador, Propietario, Empleado y Cliente bajo Arquitectura Hexagonal.","termsOfService":"http://swagger.io/terms/","contact":{"name":"Valentina Pinto","email":"valentina.pinto@pragma.com.co"},"license":{"name":"Apache 2.0","url":"http://springdoc.org"},"version":"1.0.0"},"servers":[{"url":"http://localhost:8081","description":"Generated server url"}],"security":[{"jwtAuth":[]}],"tags":[{"name":"Usuarios","description":"Endpoints para la creación y consulta de usuarios del sistema"},{"name":"Autenticación","description":"Endpoints para inicio de sesión y generación de tokens JWT"}],"paths":{"/api/v1/user/propietario":{"post":{"tags":["Usuarios"],"summary":"Crear un nuevo usuario con rol de propietario","operationId":"guardarPropietario","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserRequestDto"}}},"required":true},"responses":{"409":{"description":"El usuario ya existe por correo o documento de identidad"},"400":{"description":"Datos de entrada inválidos o reglas de negocio no cumplidas"},"404":{"description":"Rol de propietario no encontrado"},"201":{"description":"Propietario creado exitosamente"}}}},"/api/v1/auth/login":{"post":{"tags":["Autenticación"],"summary":"Iniciar sesión y obtener token JWT de autenticación","operationId":"login","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequestDto"}}},"required":true},"responses":{"400":{"description":"Datos de entrada inválidos"},"200":{"description":"Autenticación exitosa","content":{"*/*":{"schema":{"$ref":"#/components/schemas/JwtResponseDto"}}}},"401":{"description":"Credenciales incorrectas o usuario no encontrado"}}}},"/api/v1/user/{id}":{"get":{"tags":["Usuarios"],"summary":"Obtener un usuario por su ID","operationId":"obtenerUsuarioPorId","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"404":{"description":"Usuario no encontrado"},"200":{"description":"Usuario encontrado exitosamente"}}}}},"components":{"schemas":{"UserRequestDto":{"required":["apellido","celular","clave","correo","documentoDeIdentidad","fechaNacimiento","nombre"],"type":"object","properties":{"nombre":{"type":"string","description":"Nombre de pila del usuario","example":"Valentina"},"apellido":{"type":"string","description":"Apellido del usuario","example":"Pinto"},"documentoDeIdentidad":{"type":"string","description":"Documento de identidad (únicamente numérico)","example":"1098765432"},"celular":{"type":"string","description":"Número de celular (máximo 13 caracteres, admite prefijo +)","example":"+573001234567"},"fechaNacimiento":{"type":"string","description":"Fecha de nacimiento (el usuario debe ser mayor de 18 años)","format":"date","example":"2000-01-15"},"correo":{"type":"string","description":"Correo electrónico institucional o personal válido","example":"valentina.propietario@plazoleta.com"},"clave":{"type":"string","description":"Contraseña en texto plano (será encriptada con BCrypt)","example":"ClaveSegura2026*"}},"description":"Datos requeridos para la creación de un usuario con rol de propietario"},"LoginRequestDto":{"required":["clave","correo"],"type":"object","properties":{"correo":{"type":"string","description":"Correo electrónico del usuario","example":"admin@plazoleta.com"},"clave":{"type":"string","description":"Contraseña en texto plano","example":"1234"}},"description":"Credenciales para iniciar sesión en la plataforma"},"JwtResponseDto":{"type":"object","properties":{"token":{"type":"string","description":"Token JWT firmado"}},"description":"Respuesta de autenticación con token de acceso JWT"}},"securitySchemes":{"jwtAuth":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}}}}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microservicio de Usuarios - PowerUp Plazoleta",
+    "description": "API REST para la administración y autenticación de usuarios de la plataforma de Plazoleta de Comidas. Gestiona los roles de Administrador, Propietario, Empleado y Cliente bajo Arquitectura Hexagonal.",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "Valentina Pinto",
+      "email": "valentina.pinto@pragma.com.co"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://springdoc.org"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "jwtAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Endpoints para la creación y consulta de usuarios del sistema"
+    },
+    {
+      "name": "Autenticación",
+      "description": "Endpoints para inicio de sesión y generación de tokens JWT"
+    }
+  ],
+  "paths": {
+    "/api/v1/user/propietario": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crear un nuevo usuario con rol de propietario",
+        "operationId": "guardarPropietario",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "El usuario ya existe por correo o documento de identidad"
+          },
+          "400": {
+            "description": "Datos de entrada inválidos o reglas de negocio no cumplidas"
+          },
+          "404": {
+            "description": "Rol de propietario no encontrado"
+          },
+          "201": {
+            "description": "Propietario creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Iniciar sesión y obtener token JWT de autenticación",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Datos de entrada inválidos"
+          },
+          "200": {
+            "description": "Autenticación exitosa",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/JwtResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales incorrectas o usuario no encontrado"
+          }
+        }
+      }
+    },
+    "/api/v1/user/{id}": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Obtener un usuario por su ID",
+        "operationId": "obtenerUsuarioPorId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "200": {
+            "description": "Usuario encontrado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/user/empleado": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crear un nuevo usuario con rol de empleado (Solo Propietario)",
+        "operationId": "guardarEmpleado",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "": "#/components/schemas/EmployeeRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Empleado creado exitosamente"
+          },
+          "400": {
+            "description": "Datos de entrada inválidos o reglas de negocio no cumplidas"
+          },
+          "403": {
+            "description": "Acceso denegado: solo el propietario puede crear empleados"
+          },
+          "404": {
+            "description": "Rol de empleado no encontrado"
+          },
+          "409": {
+            "description": "El empleado ya existe por correo o documento de identidad"
+          }
+        },
+        "security": [
+          {
+            "BearerAuthentication": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRequestDto": {
+        "required": [
+          "apellido",
+          "celular",
+          "clave",
+          "correo",
+          "documentoDeIdentidad",
+          "fechaNacimiento",
+          "nombre"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de pila del usuario",
+            "example": "Valentina"
+          },
+          "apellido": {
+            "type": "string",
+            "description": "Apellido del usuario",
+            "example": "Pinto"
+          },
+          "documentoDeIdentidad": {
+            "type": "string",
+            "description": "Documento de identidad (únicamente numérico)",
+            "example": "1098765432"
+          },
+          "celular": {
+            "type": "string",
+            "description": "Número de celular (máximo 13 caracteres, admite prefijo +)",
+            "example": "+573001234567"
+          },
+          "fechaNacimiento": {
+            "type": "string",
+            "description": "Fecha de nacimiento (el usuario debe ser mayor de 18 años)",
+            "format": "date",
+            "example": "2000-01-15"
+          },
+          "correo": {
+            "type": "string",
+            "description": "Correo electrónico institucional o personal válido",
+            "example": "valentina.propietario@plazoleta.com"
+          },
+          "clave": {
+            "type": "string",
+            "description": "Contraseña en texto plano (será encriptada con BCrypt)",
+            "example": "ClaveSegura2026*"
+          }
+        },
+        "description": "Datos requeridos para la creación de un usuario con rol de propietario"
+      },
+      "LoginRequestDto": {
+        "required": [
+          "clave",
+          "correo"
+        ],
+        "type": "object",
+        "properties": {
+          "correo": {
+            "type": "string",
+            "description": "Correo electrónico del usuario",
+            "example": "admin@plazoleta.com"
+          },
+          "clave": {
+            "type": "string",
+            "description": "Contraseña en texto plano",
+            "example": "1234"
+          }
+        },
+        "description": "Credenciales para iniciar sesión en la plataforma"
+      },
+      "JwtResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token JWT firmado"
+          }
+        },
+        "description": "Respuesta de autenticación con token de acceso JWT"
+      },
+      "EmployeeRequestDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de pila del empleado",
+            "example": "Carlos"
+          },
+          "apellido": {
+            "type": "string",
+            "description": "Apellido del empleado",
+            "example": "Gómez"
+          },
+          "documentoDeIdentidad": {
+            "type": "string",
+            "description": "Documento de identidad (únicamente numérico)",
+            "example": "1098765432"
+          },
+          "celular": {
+            "type": "string",
+            "description": "Número de celular (máximo 13 caracteres, admite prefijo +)",
+            "example": "+573001234567"
+          },
+          "fechaNacimiento": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de nacimiento (opcional)",
+            "example": "1998-05-20"
+          },
+          "correo": {
+            "type": "string",
+            "description": "Correo electrónico válido",
+            "example": "carlos.empleado@restaurante.com"
+          },
+          "clave": {
+            "type": "string",
+            "description": "Contraseña en texto plano (será encriptada con BCrypt)",
+            "example": "ClaveSegura2026*"
+          },
+          "idRol": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificador del rol (3 para EMPLEADO)",
+            "example": 3
+          }
+        },
+        "required": [
+          "nombre",
+          "apellido",
+          "documentoDeIdentidad",
+          "celular",
+          "correo",
+          "clave"
+        ],
+        "description": "Datos requeridos para la creación de un usuario con rol de empleado"
+      }
+    },
+    "securitySchemes": {
+      "jwtAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

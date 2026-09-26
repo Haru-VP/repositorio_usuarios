@@ -1,5 +1,6 @@
 package com.pragma.powerup.application.handler.impl;
 
+import com.pragma.powerup.application.dto.request.EmployeeRequestDto;
 import com.pragma.powerup.application.dto.request.UserRequestDto;
 import com.pragma.powerup.application.dto.response.UserResponseDto;
 import com.pragma.powerup.application.handler.IUserHandler;
@@ -24,6 +25,12 @@ public class UserHandler implements IUserHandler {
     public void guardarPropietario(UserRequestDto userRequestDto) {
         UserModel userModel = userRequestMapper.toModel(userRequestDto);
         userServicePort.guardarPropietario(userModel);
+    }
+
+    @Override
+    public void guardarEmpleado(EmployeeRequestDto employeeRequestDto) {
+        UserModel userModel = userRequestMapper.toModel(employeeRequestDto);
+        userServicePort.guardarEmpleado(userModel);
     }
 
     @Override
