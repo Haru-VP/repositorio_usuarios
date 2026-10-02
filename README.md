@@ -106,7 +106,7 @@ Cada microservicio se estructura siguiendo la **Arquitectura Hexagonal**, cuyo p
 | 10.0 | Cliente | Listar Platos de un Restaurante | `powerup-plazoleta` | - | Pendiente |
 | 11.0 | Cliente | Realizar Pedido | `powerup-plazoleta` | - | Pendiente |
 | 12.0 | Empleado | Listar pedidos filtrando por estado | `powerup-plazoleta` | - | Pendiente |
-| 13.0 | Empleado | Asignarse a pedido ("En preparación") | `powerup-plazoleta` | - | Pendiente |
+| **13.0** | Empleado | **Asignarse a pedido ("En preparación")** | `powerup-plazoleta` | `feature/HU-13-asignarse-pedido-preparacion` | **Completada (Lista para pruebas)** |
 | 14.0 | Empleado | Notificar pedido listo (SMS con PIN) | `powerup-mensajeria` | - | Pendiente |
 | 15.0 | Empleado | Entregar pedido con PIN | `powerup-plazoleta` | - | Pendiente |
 | 16.0 | Cliente | Cancelar pedido en estado Pendiente | `powerup-plazoleta` | - | Pendiente |
