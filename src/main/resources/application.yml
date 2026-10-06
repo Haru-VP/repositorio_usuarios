@@ -7,9 +7,19 @@ spring:
     username: root
     password: 1234
 
+  sql:
+    init:
+      mode: always
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    defer-datasource-initialization: true
 appDescription: "Pragma Powerup"
 appVersion: "1.0.0"
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000
+

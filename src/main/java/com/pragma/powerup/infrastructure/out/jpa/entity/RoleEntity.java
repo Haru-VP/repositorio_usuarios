@@ -13,17 +13,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "objectTable")
+@Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ObjectEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RoleEntity {
+
     @Id
-    @Column(name = "object_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50)
-    private String name;
+    @Column(nullable = false, length = 50)
+    private String nombre;
+
+    @Column(nullable = false)
+    private String descripcion;
 }
